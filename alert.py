@@ -26,7 +26,7 @@ class Alert(object):
 
         ## Attach event listeners upon instantiation (to prevent duplicates)
         self.attachEvents()        
-    
+        self.flag=0
     def start(self):
         """ Start the daemon and run persistently.  Auto-retrieves new map in starting. 
         """
@@ -43,25 +43,35 @@ class Alert(object):
         """
         ## clear all signals
         smokesignal.clear()
-
+        
         @smokesignal.on('sonarData')
         def sonardata(args):
-            leftvalue=eval(args.get('1'))
-            rightvalue=eval(args.get('2'))
-            leftvalue=int(leftvalue)
-            rightvalue=int(rightvalue)
-            threhold=70
-            if((leftvalue <= theshold) and (rightvalue <= threshold)):
+	    
+	   # print args  
+	    payload =eval(args.get("payload"))
+           # print payload
+	    leftvalue= payload["1"]
+            rightvalue=payload["2"]
+	    #print leftvalue
+
+            leftvalue=int(leftvalue.rstrip('\u0'))
+            rightvalue=int(rightvalue.rstrip('\u0'))
+            threshold=70
+            if((leftvalue <= threshold) and (rightvalue <= threshold)):
                 #self._dispatcherClient.send(9001, 'obstacle', {'text': 'Stop'})
                 self._dispatcherClient.send(9002, 'say', {'text': 'Stop'})
-            if((leftvalue <= theshold) and (rightvalue >= threshold)):
+		self.flag=1;
+            if((leftvalue <= threshold) and (rightvalue >= threshold)):
                 #self._dispatcherClient.send(9001, 'obstacle', {'text': 'Keep Right'})
-                self._dispatcherClient.send(9002, 'say', {'text': 'Stop'})
-            
-            if((leftvalue >= theshold) and (rightvalue <= threshold)):
+                self._dispatcherClient.send(9002, 'say', {'text': 'keep right'})
+                self.flag=1;
+            if((leftvalue >= threshold) and (rightvalue <= threshold)):
                 #self._dispatcherClient.send(9001, 'obstacle', {'text': 'Keep Left'})
-                self._dispatcherClient.send(9002, 'say', {'text': 'Stop'})
-                    
+                self._dispatcherClient.send(9002, 'say', {'text': 'keep left'})
+		self.flag=1
+            if((leftvalue >=threshold) and (rightvalue>=threshold) and self.flag ==1):
+		self._dispatcherClient.send(9002, 'say', {'text': 'proceed'})
+		self.flag=0;        
 def runMain():
     """ Main function called when run as standalone daemon
     """
