@@ -21,7 +21,7 @@ class Alert(object):
     def __init__(self):
         
         ## For interprocess comms 
-        self.DISPATCHER_PORT = 9001
+        self.DISPATCHER_PORT = 9004
         self._dispatcherClient = DispatcherClient(port=self.DISPATCHER_PORT)
 
         ## Attach event listeners upon instantiation (to prevent duplicates)
@@ -31,11 +31,7 @@ class Alert(object):
         """ Start the daemon and run persistently.  Auto-retrieves new map in starting. 
         """
         ## Start inter-process comms
-        self._dispatcherClient.start()
-        
-
-        self._dispatcherClient.send(9002, 'say', {'text': 'Started Navigation Daemon.'})
-       
+        self._dispatcherClient.start()      
 
     def attachEvents(self):
         """Configure event callbacks to attach to daemon on start.
@@ -55,22 +51,22 @@ class Alert(object):
             leftvalue=int(leftvalue)
             rightvalue=int(rightvalue)
             threhold=70
-        if((leftvalue <= theshold) and (rightvalue <= threshold)):
-            self._dispatcherClient.send(9001, 'obstacle', {'text': 'Stop'})
-            self._dispatcherClient.send(9001, 'say', {'text': 'Stop'})
-        if((leftvalue <= theshold) and (rightvalue >= threshold)):
-            self._dispatcherClient.send(9001, 'obstacle', {'text': 'Keep Right'})
-            self._dispatcherClient.send(9001, 'say', {'text': 'Stop'})
+            if((leftvalue <= theshold) and (rightvalue <= threshold)):
+                #self._dispatcherClient.send(9001, 'obstacle', {'text': 'Stop'})
+                self._dispatcherClient.send(9002, 'say', {'text': 'Stop'})
+            if((leftvalue <= theshold) and (rightvalue >= threshold)):
+                #self._dispatcherClient.send(9001, 'obstacle', {'text': 'Keep Right'})
+                self._dispatcherClient.send(9002, 'say', {'text': 'Stop'})
             
-        if((leftvalue >= theshold) and (rightvalue <= threshold)):
-            self._dispatcherClient.send(9001, 'obstacle', {'text': 'Keep Left'})
-            self._dispatcherClient.send(9001, 'say', {'text': 'Stop'})
+            if((leftvalue >= theshold) and (rightvalue <= threshold)):
+                #self._dispatcherClient.send(9001, 'obstacle', {'text': 'Keep Left'})
+                self._dispatcherClient.send(9002, 'say', {'text': 'Stop'})
                     
 def runMain():
     """ Main function called when run as standalone daemon
     """
-    Alert = Alert()
-    Alert.start()
+    alert = Alert()
+    alert.start()
 
 
 if __name__ == '__main__':
