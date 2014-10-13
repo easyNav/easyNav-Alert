@@ -5,7 +5,6 @@ import Queue
 import datetime
 
 from easyNav_pi_dispatcher import DispatcherClient
-from test.test_applesingle import applesingledata
 
 class Alert(object):
     """ This is the Nav class, which handles navigation on the Raspberry Pi. 
@@ -77,8 +76,9 @@ class Alert(object):
                         triggersoundtime=datetime.datetime.now().time() # when it sends
                      
                 else
+                    
 					self.state=1 # proceed state
-					self._dispatcherClient.send(9002, 'say', {'text': 'proceed'})
+				    self._dispatcherClient.send(9002, 'say', {'text': 'proceed'})
                     triggersoundtime=datetime.datetime.now().time() # when it sends
             
             else if (self.state ==2): #stop state
@@ -100,12 +100,13 @@ class Alert(object):
                         triggersoundtime=datetime.datetime.now().time() # when it sends
                         
                 else
+                
                     self.state =2 #go to stop state
-					payload =eval(args.get("payload"))
-					leftvalue= payload["1"]
-					rightvalue=payload["2"]
-					leftvalue=int(leftvalue.rstrip('\u0'))
-					rightvalue=int(rightvalue.rstrip('\u0'))   
+                    payload =eval(args.get("payload"))
+                    leftvalue= payload["1"]
+                    rightvalue=payload["2"]
+                    leftvalue=int(leftvalue.rstrip('\u0'))
+                    rightvalue=int(rightvalue.rstrip('\u0'))   
                     
             else if (self.state ==3):#keep right 
                 payload =eval(args.get("payload"))
@@ -124,11 +125,11 @@ class Alert(object):
                  
                 else
                     self.state=2 #go to stop state
-					payload =eval(args.get("payload"))
-					leftvalue= payload["1"]
-					rightvalue=payload["2"]
-					leftvalue=int(leftvalue.rstrip('\u0'))
-					rightvalue=int(rightvalue.rstrip('\u0')) 
+                    payload =eval(args.get("payload"))
+                    leftvalue= payload["1"]
+                    rightvalue=payload["2"]
+                    leftvalue=int(leftvalue.rstrip('\u0'))
+                    rightvalue=int(rightvalue.rstrip('\u0')) 
             
             else if (self.state == 4):#keep left state
                 
@@ -148,12 +149,12 @@ class Alert(object):
                         triggersoundtime=datetime.datetime.now().time() # when it sends
                 
                 else 
-					self.state=2;  #go to stop state  
-					payload =eval(args.get("payload"))
-					leftvalue= payload["1"]
-					rightvalue=payload["2"]
-					leftvalue=int(leftvalue.rstrip('\u0'))
-					rightvalue=int(rightvalue.rstrip('\u0')) 						
+                    self.state=2;  #go to stop state  
+                    payload =eval(args.get("payload"))
+                    leftvalue= payload["1"]
+                    rightvalue=payload["2"]
+                    leftvalue=int(leftvalue.rstrip('\u0'))
+                    rightvalue=int(rightvalue.rstrip('\u0')) 						
                                
 def runMain():
     """ Main function called when run as standalone daemon
